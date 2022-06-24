@@ -4,6 +4,6 @@ from neuralnet import NeuralNet
 import numpy as np
 
 processor = Processor()
-neural_net = NeuralNet()
-
 matrix, annotations = processor.get_matrix_with_annotations()
+n = len(matrix)
+neural_net = NeuralNet(n)
