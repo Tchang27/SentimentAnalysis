@@ -73,12 +73,21 @@ class Processor:
         self.data[index] = clean_data
 
     def vectorize(self):
-        max_words = 5000
-        max_len = 200
+        max_words = 50
+        max_len = 10
         tokenizer = Tokenizer(num_words=max_words)
         tokenizer.fit_on_texts(self.data)
         sequences = tokenizer.texts_to_sequences(self.data)
         self.data = pad_sequences(sequences, maxlen=max_len)
+
+        for i in range(len(self.annotations)):
+            if self.annotations[i] == 'positive':
+                self.annotations[i] = 1
+            else:
+                self.annotations[i] = 0
+    
+    def sigmoid(self, x):
+        return 1.0 / float(1.0 + np.exp(-x))
         
     def get_matrix_with_annotations(self):
         return self.data, self.annotations
