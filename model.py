@@ -19,7 +19,7 @@ class Model():
 
 		n = len(matrix[0])
 		self.nn = NeuralNet([n,n,int(n/2),1], 0.01)
-		self.nn.fit(training, y, epochs=1)
+		self.nn.fit(training, y, epochs=2500)
 
 		accuracy = 0
 		for (x, target) in zip(training, y):
