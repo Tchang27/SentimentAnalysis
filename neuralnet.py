@@ -33,6 +33,7 @@ class NeuralNet:
         displayUpdate - intervals to display progress
         '''
         X = np.c_[X, np.ones((X.shape[0]))]
+        counter = 0
         for epoch in np.arange(0, epochs):
             for x, target in zip(X, y):
                 self.fit_partial(x, target)
@@ -41,8 +42,9 @@ class NeuralNet:
                 loss = self.calculate_loss(X,y)
                 print("[INFO] epoch={}, loss={:.7f}".format(
                 epoch + 1, loss))
-                
-            print("epoch complete")
+            
+            counter += 1
+            print("epoch " + str(counter) + " complete")
     def fit_partial(self, x, y):
         #forwward propagation
         A = [np.atleast_2d(x)]
@@ -84,8 +86,8 @@ class NeuralNet:
     def calculate_loss(self, X, targets):
         targets = np.atleast_2d(targets)
         predicitions = self.predict(X, addBias=False)
-        loss = 0.5*np.sum((predicitions-targets)*(predicitions-targets))
+        to_sum = np.multiply((predicitions-targets), (predicitions-targets))
+        loss = 0.5*np.sum(to_sum)
         return loss
-
 
 

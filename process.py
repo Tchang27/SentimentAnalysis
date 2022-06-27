@@ -17,22 +17,30 @@ STOP_WORDS = set(stopwords.words('english'))
 Class that processes sentiment annotated data for training neural net
 '''
 class Processor:
-    def __init__(self):
+    def __init__(self, array):
         self.data = []
         self.annotations = []
         self.text_regex = r'''[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
         
         #read in csv
-        with open('data/IMDB_Dataset.csv', 'r') as file:
-            reader = csv.reader(file)
-            for row in reader:
-                self.data.append(row[0])
-                self.annotations.append(row[1])
+        if len(array) == 0:
+            with open('data/IMDB_Dataset.csv', 'r') as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    self.data.append(row[0])
+                    self.annotations.append(row[1])
+        else:
+            self.data = array
         #parse data
         self.parse_all()
 
         #vectorize and standardize data for training
-        self.vectorize()
+        for i in range(len(self.annotations)):
+            if self.annotations[i] == 'positive':
+                self.annotations[i] = [1]
+            else:
+                self.annotations[i] = [0]
+        self.data = self.vectorize(self.data)
 
     def parse_all(self):
         '''
@@ -72,22 +80,18 @@ class Processor:
             clean_data += ' ' + token
         self.data[index] = clean_data
 
-    def vectorize(self):
-        max_words = 50
-        max_len = 10
+    def vectorize(self, data):
+        max_words = 1000
+        max_len = 100
         tokenizer = Tokenizer(num_words=max_words)
-        tokenizer.fit_on_texts(self.data)
-        sequences = tokenizer.texts_to_sequences(self.data)
-        self.data = pad_sequences(sequences, maxlen=max_len)
+        tokenizer.fit_on_texts(data)
+        sequences = tokenizer.texts_to_sequences(data)
+        data = pad_sequences(sequences, maxlen=max_len)
 
-        for i in range(len(self.annotations)):
-            if self.annotations[i] == 'positive':
-                self.annotations[i] = 1
-            else:
-                self.annotations[i] = 0
-    
-    def sigmoid(self, x):
-        return 1.0 / float(1.0 + np.exp(-x))
+        data = np.divide(data, 100)
+
+        return data
         
     def get_matrix_with_annotations(self):
         return self.data, self.annotations
+
