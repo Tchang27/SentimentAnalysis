@@ -82,13 +82,13 @@ class Processor:
 
     def vectorize(self, data):
         max_words = 1000
-        max_len = 100
+        max_len = 200
         tokenizer = Tokenizer(num_words=max_words)
         tokenizer.fit_on_texts(data)
         sequences = tokenizer.texts_to_sequences(data)
         data = pad_sequences(sequences, maxlen=max_len)
 
-        data = np.divide(data, 100)
+        data = np.divide(data, 200)
 
         return data
         

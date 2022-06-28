@@ -14,8 +14,9 @@ Once the model is trained, it will prompt the user to write a sentence then eval
 Quit the program by typing .quit
 
 Known Issues and Bugs:
-The best known learning rate for the program is 0.01, with a neural net structure of (n, n, n/2, 1). Adjusting
-these parameters will lead to various results.
+Currently overfiting the training data, achieving around 9% accuracy 
+on training data and 55% accuracy on testing data
+data 
 
 Acknowledgements:
 Data gathered from:

@@ -18,7 +18,7 @@ class Model():
 		y = np.array(annotations)
 
 		n = len(matrix[0])
-		self.nn = NeuralNet([n,n,int(n/2),1], 0.01)
+		self.nn = NeuralNet([n,int(n/2),int(n/2),1], 0.01)
 		self.nn.fit(training, y, epochs=2500)
 
 		accuracy = 0
