@@ -1,14 +1,10 @@
-import math
 import re
 import csv
-from tokenize import Token
 import numpy as np
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from keras.preprocessing.text import Tokenizer
 from keras.utils import pad_sequences
-from keras import regularizers
-
 
 
 STOP_WORDS = set(stopwords.words('english'))
@@ -91,6 +87,7 @@ class Processor:
         data = np.divide(data, 200)
 
         return data
+        
         
     def get_matrix_with_annotations(self):
         return self.data, self.annotations

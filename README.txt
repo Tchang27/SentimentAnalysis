@@ -4,9 +4,13 @@ negative. The model is trained using backpropagation, and the learning rate and 
 finishes training, the user can type in sentences for the model to evaluate.
 
 Program Structure:
+Model 1:
 process.py - class that processes text data and converts it into vectors that can be used to train the neural net
 neuralnet.py - class for the neural net 
 model.py - class that trains the neural net using the processed data and handles user/console interaction
+
+Model 2:
+complete_model.py - using python libraries, creates a sentiment analysis model
 
 How to Use:
 Run model.py

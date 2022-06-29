@@ -1,4 +1,3 @@
-from tkinter import Y
 from process import Processor
 from neuralnet import NeuralNet
 import numpy as np
@@ -18,8 +17,8 @@ class Model():
 		y = np.array(annotations)
 
 		n = len(matrix[0])
-		self.nn = NeuralNet([n,int(n/2),int(n/2),1], 0.01)
-		self.nn.fit(training, y, epochs=2500)
+		self.nn = NeuralNet([n,int(n/2),n,int(n/2),1], 0.01)
+		self.nn.fit(training, y, epochs=100)
 
 		accuracy = 0
 		for (x, target) in zip(training, y):
