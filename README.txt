@@ -18,8 +18,7 @@ Once the model is trained, it will prompt the user to write a sentence then eval
 Quit the program by typing .quit
 
 Known Issues and Bugs:
-Currently overfiting the training data, achieving around 9% accuracy 
-on training data and 55% accuracy on testing data
+Currently overfiting the training data, achieving around 55% accuracy on testing data
 data 
 
 Acknowledgements:

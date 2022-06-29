@@ -1,7 +1,11 @@
+from telnetlib import Telnet
 from process import Processor
 from neuralnet import NeuralNet
 import numpy as np
 import os
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
 
 
 class Model():
@@ -15,13 +19,26 @@ class Model():
 		matrix, annotations = self.processor.get_matrix_with_annotations()
 		training = np.array(matrix)
 		y = np.array(annotations)
+		y = pd.get_dummies(y)
+		y = y.iloc[:,1].values
+		X_train, X_test, y_train, y_test = train_test_split(training,y,test_size = 0.20, random_state=0)
+
+		#reformat for training/testing
+		clean_y_train = []
+		clean_y_test = []
+		for item in y_train:
+			clean_y_train.append([item])
+		for item1 in y_test:
+			clean_y_test.append([item1])
+		clean_y_train = np.array(clean_y_train)
+		clean_y_test = np.array(clean_y_test)
 
 		n = len(matrix[0])
 		self.nn = NeuralNet([n,int(n/2),n,int(n/2),1], 0.01)
-		self.nn.fit(training, y, epochs=100)
-
+		self.nn.fit(X_train, clean_y_train, epochs=1000)
+		
 		accuracy = 0
-		for (x, target) in zip(training, y):
+		for (x, target) in zip(X_test, clean_y_test):
 			# make a prediction on the data point and display the result
 			# to our console
 			pred = self.nn.predict(x)[0][0]
@@ -29,16 +46,15 @@ class Model():
 			if step == target[0]:
 				accuracy += 1
 		accuracy = accuracy / len(training)
-		print("Accuracy of model on training data: " + str(accuracy))
+		print("Accuracy of model on partitioned testing data: " + str(accuracy))
 
-
-		#running model on test data
+		#running model on another test data
 		neg_accuracy = self.test_model('data/neg', 0)
 		print("Accuracy of model on neg testing data: " + str(neg_accuracy))
 		
 		pos_accuracy = self.test_model('data/pos', 1)
 		print("Accuracy of model on pos testing data: " + str(pos_accuracy))
-
+		
 	
 	def test_model(self, dir, target):
 		'''

@@ -2,12 +2,13 @@ import re
 import csv
 import numpy as np
 from nltk.corpus import stopwords
-from nltk.stem import PorterStemmer
+from nltk.stem import PorterStemmer, WordNetLemmatizer
 from keras.preprocessing.text import Tokenizer
 from keras.utils import pad_sequences
 
 
 STOP_WORDS = set(stopwords.words('english'))
+STOP_WORDS.remove('not')
 
 '''
 Class that processes sentiment annotated data for training neural net
@@ -33,9 +34,9 @@ class Processor:
         #vectorize and standardize data for training
         for i in range(len(self.annotations)):
             if self.annotations[i] == 'positive':
-                self.annotations[i] = [1]
+                self.annotations[i] = 1
             else:
-                self.annotations[i] = [0]
+                self.annotations[i] = 0
         self.data = self.vectorize(self.data)
 
     def parse_all(self):
@@ -43,12 +44,13 @@ class Processor:
         Preprocesses the csv file data
         '''
         stemmer = PorterStemmer()
+        lemmatizer = WordNetLemmatizer()
         stemmer_cache = {}
         #each review is a list consisting of text and sentiment
         for i, review in enumerate(self.data):
-            self.parse_text(i, review, stemmer, stemmer_cache)
+            self.parse_text(i, review, stemmer, lemmatizer, stemmer_cache)
 
-    def parse_text(self, index, review, stemmer, stemmer_cache):
+    def parse_text(self, index, review, stemmer, lemmatizer, stemmer_cache):
         '''
         Tokenize, stem, stop all words in the text 
         Assign 1 for positive, 0 for negative sentiments
@@ -67,6 +69,7 @@ class Processor:
                 return stemmer_cache[t]
             else:
                 temp = stemmer.stem(t.lower())
+                temp = lemmatizer.lemmatize(temp)
                 stemmer_cache[t] = temp
                 return temp
 
