@@ -21,6 +21,14 @@ Known Issues and Bugs:
 Currently overfiting the training data, achieving around 55% accuracy on testing data
 data 
 
+Results:
+Model 1:
+
+Model 2:
+Using sklearn, the model gets around 84% on the testing data, which was partitioned from the 
+training set and not used during learning. However, it hovers around 53-59% on external testing
+data from a completely different source
+
 Acknowledgements:
 Data gathered from:
   https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews

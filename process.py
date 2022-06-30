@@ -5,6 +5,7 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 from keras.preprocessing.text import Tokenizer
 from keras.utils import pad_sequences
+from sklearn.feature_extraction.text import CountVectorizer
 
 
 STOP_WORDS = set(stopwords.words('english'))
@@ -14,7 +15,7 @@ STOP_WORDS.remove('not')
 Class that processes sentiment annotated data for training neural net
 '''
 class Processor:
-    def __init__(self, array):
+    def __init__(self, array=[]):
         self.data = []
         self.annotations = []
         self.text_regex = r'''[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
@@ -80,7 +81,11 @@ class Processor:
         self.data[index] = clean_data
 
     def vectorize(self, data):
-        max_words = 1000
+        cv = CountVectorizer(max_features=250)
+        vec_mat = cv.fit_transform(data).toarray()
+        return vec_mat
+        '''
+        max_words = 2000
         max_len = 200
         tokenizer = Tokenizer(num_words=max_words)
         tokenizer.fit_on_texts(data)
@@ -90,6 +95,7 @@ class Processor:
         data = np.divide(data, 200)
 
         return data
+        '''
         
         
     def get_matrix_with_annotations(self):

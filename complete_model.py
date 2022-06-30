@@ -8,6 +8,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, classification_report
+import os
 
 #read in and format files
 df = pd.read_csv('data/IMDB_Dataset.csv')
@@ -64,13 +65,49 @@ cv = CountVectorizer(max_features=2500)
 X = cv.fit_transform(corpus).toarray()
 y = pd.get_dummies(df['sentiment'])
 y = y.iloc[:,1].values
-X_train, X_test, y_train, y_test = train_test_split(X,y,test_size = 0.20, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size = 0.25, random_state=0)
 model = MultinomialNB().fit(X_train, y_train)
 
 #make predicitions
 predictions = model.predict(X_test)
 print('Model accuracy: ' + str(accuracy_score(y_test, predictions)))
 print(classification_report(predictions, y_test))
+
+#other testing data
+def test_model(dir, type, target):
+    new_corpus = []
+    data = []
+    def parse_text_smaller(idx):
+        '''
+        Tokenize, stem, stop all words in the text 
+        Assign 1 for positive, 0 for negative sentiments
+        '''
+        clean_data = ''
+        tokens = re.findall(text_regex, data[idx])
+
+        tokens = [process_token(token) for token in tokens if token not in STOP_WORDS]
+
+        for token in tokens:
+            clean_data += ' ' + token
+        new_corpus.append(clean_data)
+    for root, dirs, files in os.walk(dir):
+        for file in files:
+            if file.endswith('.txt'):
+                with open(os.path.join(root, file), 'r') as f:
+                    text = f.read()
+                    data.append(text)
+    for i in tqdm(range(len(data))):
+        parse_text_smaller(i)
+    X2 = cv.fit_transform(new_corpus).toarray()
+    y2 = [target]*len(X2)
+    predictions = model.predict(X2)
+    print("Model acuracy on " + type + "test data: " + str(accuracy_score(y2, predictions)))
+    print(classification_report(predictions, y2))
+
+test_model('data/neg', "negative", 0)
+test_model('data/pos', "positive", 1)
+
+
 
 user_input = input("\nWrite a sentence: ")
 while user_input != ".quit":

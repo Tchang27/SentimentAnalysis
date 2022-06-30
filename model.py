@@ -6,6 +6,8 @@ import os
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
+import seaborn
+import matplotlib.pyplot as plt
 
 
 class Model():
@@ -15,13 +17,13 @@ class Model():
 		Constructor of model, trains neural net to be able to
 		conduct sentiment analysis on user inputs
 		'''
-		self.processor = Processor([])
+		self.processor = Processor()
 		matrix, annotations = self.processor.get_matrix_with_annotations()
 		training = np.array(matrix)
 		y = np.array(annotations)
 		y = pd.get_dummies(y)
 		y = y.iloc[:,1].values
-		X_train, X_test, y_train, y_test = train_test_split(training,y,test_size = 0.20, random_state=0)
+		X_train, X_test, y_train, y_test = train_test_split(training,y,test_size = 0.15, random_state=0)
 
 		#reformat for training/testing
 		clean_y_train = []
@@ -33,10 +35,23 @@ class Model():
 		clean_y_train = np.array(clean_y_train)
 		clean_y_test = np.array(clean_y_test)
 
+		#train model
 		n = len(matrix[0])
-		self.nn = NeuralNet([n,int(n/2),n,int(n/2),1], 0.01)
-		self.nn.fit(X_train, clean_y_train, epochs=1000)
+		self.nn = NeuralNet([n,n,8,4,2,1], 0.01)
+		self.nn.fit(X_train, clean_y_train, epochs=1)
 		
+		#get accuraacy on training and testing
+		accuracy = 0
+		for (x, target) in zip(X_train, clean_y_train):
+			# make a prediction on the data point and display the result
+			# to our console
+			pred = self.nn.predict(x)[0][0]
+			step = 1 if pred > 0.5 else 0
+			if step == target[0]:
+				accuracy += 1
+		accuracy = accuracy / len(X_train)
+		print("Accuracy of model on training data: " + str(accuracy))
+
 		accuracy = 0
 		for (x, target) in zip(X_test, clean_y_test):
 			# make a prediction on the data point and display the result
@@ -45,13 +60,12 @@ class Model():
 			step = 1 if pred > 0.5 else 0
 			if step == target[0]:
 				accuracy += 1
-		accuracy = accuracy / len(training)
+		accuracy = accuracy / len(X_test)
 		print("Accuracy of model on partitioned testing data: " + str(accuracy))
 
 		#running model on another test data
 		neg_accuracy = self.test_model('data/neg', 0)
 		print("Accuracy of model on neg testing data: " + str(neg_accuracy))
-		
 		pos_accuracy = self.test_model('data/pos', 1)
 		print("Accuracy of model on pos testing data: " + str(pos_accuracy))
 		
@@ -100,13 +114,17 @@ if __name__ == "__main__":
 	user_input = input("\nWrite a sentence: ")
 	while user_input != ".quit":
 		data = []
-		data.append(user_input)
+		data.append(str(user_input))
 		proc = Processor(data)
 
 		matrix, unused = proc.get_matrix_with_annotations()
 		vector_data = np.array(matrix)
-		pred = m.nn.predict(vector_data)[0][0]
+		shape = np.shape(vector_data)
+		padded_arr = np.zeros((1, 250))
+		padded_arr[:shape[0],:shape[1]] = vector_data
+		pred = m.nn.predict(padded_arr)[0][0]
 
+		print("Model output: " + str(pred))
 		step = 1 if pred > 0.5 else 0
 		if step == 1:
 			print("Prediction: positive")
