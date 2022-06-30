@@ -33,8 +33,8 @@ class Model():
 
 		#train model
 		n = len(matrix[0])
-		self.nn = NeuralNet([n,n,8,4,2,1], 0.01)
-		self.nn.fit(X_train, clean_y_train, epochs=1)
+		self.nn = NeuralNet([n,16,4,4,1], 0.01)
+		self.nn.fit(X_train, clean_y_train, epochs=1000)
 		
 		#get accuraacy on training and testing
 		accuracy = 0

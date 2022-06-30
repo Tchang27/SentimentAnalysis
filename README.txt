@@ -18,11 +18,15 @@ Once the model is trained, it will prompt the user to write a sentence then eval
 Quit the program by typing .quit
 
 Known Issues and Bugs:
-Currently overfiting the training data, achieving around 55% accuracy on testing data
+Currently Model 1 is overfiting the training data, achieving around 55% accuracy on testing data
 data 
 
 Results:
 Model 1:
+Built from scratch, using just numpy, model 1 is much slower and slightly lower in accuracy
+compared to Model 2. Testing data from the same source as the training data yield accuracy 
+around 77%. Accuracy on external datasets is 80% on negative sentiments and 21% on positive sentiments.
+Thats means the model yields 20% false positives and 79% false negatives.
 
 Model 2:
 Using sklearn, the model gets around 84% on the testing data, which was partitioned from the 
