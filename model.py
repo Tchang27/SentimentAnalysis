@@ -1,13 +1,9 @@
-from telnetlib import Telnet
 from process import Processor
 from neuralnet import NeuralNet
 import numpy as np
 import os
 import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
-import seaborn
-import matplotlib.pyplot as plt
 
 
 class Model():

@@ -4,12 +4,12 @@ negative. The model is trained using backpropagation, and the learning rate and 
 finishes training, the user can type in sentences for the model to evaluate.
 
 Program Structure:
-Model 1:
+Model 1: Built from scratch
 process.py - class that processes text data and converts it into vectors that can be used to train the neural net
 neuralnet.py - class for the neural net 
 model.py - class that trains the neural net using the processed data and handles user/console interaction
 
-Model 2:
+Model 2: Built using machine learning libraries
 complete_model.py - using python libraries, creates a sentiment analysis model
 
 How to Use:
@@ -28,6 +28,12 @@ Model 2:
 Using sklearn, the model gets around 84% on the testing data, which was partitioned from the 
 training set and not used during learning. However, it hovers around 53-59% on external testing
 data from a completely different source
+
+Conclusions:
+Both the model created from scratch and the model created from python's machine learning 
+libraries tend to perform sentiment analysis well on testing data sourced from the same 
+dataset as the training data, but poorly on external datasets. This indicates the models 
+are learning hidden patterns within the training dataset rather than generalized sentiment patterns.
 
 Acknowledgements:
 Data gathered from:
