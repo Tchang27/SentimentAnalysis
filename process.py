@@ -27,7 +27,7 @@ class Processor:
             with open('data/IMDB_Dataset.csv', 'r') as file:
                 reader = csv.reader(file)
                 for row in reader:
-                    self.data.append(row[0])
+                    self.data.append(row[0].lower())
                     self.annotations.append(row[1])
         else:
             self.data = array
@@ -71,8 +71,8 @@ class Processor:
             if t in stemmer_cache:
                 return stemmer_cache[t]
             else:
-                temp = stemmer.stem(t.lower())
-                temp = lemmatizer.lemmatize(temp)
+                temp = lemmatizer.lemmatize(t)
+                temp = stemmer.stem(temp.lower())
                 stemmer_cache[t] = temp
                 return temp
 

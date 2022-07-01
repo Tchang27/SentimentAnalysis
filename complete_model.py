@@ -37,8 +37,8 @@ def process_token(t: str) -> str:
             if t in stemmer_cache:
                 return stemmer_cache[t]
             else:
-                #temp = stemmer.stem(t.lower())
                 temp = lemmatizer.lemmatize(t)
+                temp = stemmer.stem(temp.lower())
                 stemmer_cache[t] = temp
                 return temp
 
@@ -58,7 +58,6 @@ def parse_text(idx):
 
 for i in tqdm(range(0, len(df['review']))):
     parse_text(i)
-
 #create model
 cv = CountVectorizer(max_features=2500)
 X = cv.fit_transform(corpus).toarray()
@@ -71,6 +70,41 @@ model = MultinomialNB().fit(X_train, y_train)
 predictions = model.predict(X_test)
 print('Model accuracy: ' + str(accuracy_score(y_test, predictions)))
 print(classification_report(predictions, y_test))
+
+#other testing data
+def test_model(dir, type, target):
+    new_corpus = []
+    data = []
+    def parse_text_smaller(idx):
+        '''
+        Tokenize, stem, stop all words in the text 
+        Assign 1 for positive, 0 for negative sentiments
+        '''
+        clean_data = ''
+        tokens = re.findall(text_regex, data[idx])
+
+        tokens = [process_token(token) for token in tokens if token not in STOP_WORDS]
+
+        for token in tokens:
+            clean_data += ' ' + token
+        new_corpus.append(clean_data)
+    for root, dirs, files in os.walk(dir):
+        for file in files:
+            if file.endswith('.txt'):
+                with open(os.path.join(root, file), 'r') as f:
+                    text = f.read()
+                    data.append(text)
+    for i in tqdm(range(len(data))):
+        parse_text_smaller(i)
+    X2 = cv.transform(new_corpus).toarray()
+    y2 = [target]*len(X2)
+    predictions = model.predict(X2)
+    print("Model acuracy on " + type + "test data: " + str(accuracy_score(y2, predictions)))
+    print(classification_report(predictions, y2))
+
+test_model('data/neg', "negative", 0)
+test_model('data/pos', "positive", 1)
+
 
 
 user_input = input("\nWrite a sentence: ")

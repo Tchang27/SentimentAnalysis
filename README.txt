@@ -18,7 +18,7 @@ Once the model is trained, it will prompt the user to write a sentence then eval
 Quit the program by typing .quit
 
 Known Issues and Bugs:
-Currently Model 1 is overfiting the training data
+Currently Model 1 is slightly overfiting the training data
 The best configuration to minimize overfitting:
 [n,32,32,8,1]
 alpha = 0.01
@@ -27,11 +27,15 @@ epochs = 100-150
 Results:
 Model 1:
 Built from scratch, using just numpy, model 1 is slower to train than Model 2. Testing data from the
-same source as the training data yield accuracy around 85% after 100 iterations.
+same source as the training data yield accuracy around 85% after 100 iterations. Testing accuracy 
+on external data was 87% on negative sentiments and 89% on posiive sentiments, meaning that there
+were 13% false positives and 11% false negatives.
 
 Model 2:
 Using sklearn, the model gets around 84% on the testing data, which was partitioned from the 
-training set and not used during learning. 
+training set and not used during learning. Testing accuracy on external data was 86% on negative
+sentiments and 84% on positive sentiments, meaning there were 14% false positives and 16% false
+negatives.
 
 Conclusions:
 Both the model created from scratch and the model created from python's machine learning 

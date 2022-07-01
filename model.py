@@ -8,6 +8,28 @@ import re
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
+text_regex = r'''[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
+stemmer = PorterStemmer()
+stemmer_cache = {}
+lemmatizer = WordNetLemmatizer()
+STOP_WORDS = set(stopwords.words('english'))
+STOP_WORDS.remove('not')
+
+def process_token(t: str) -> str:
+	"""
+	Small helper to stem individual tokens (either get from cache or
+	stem and add to cache)
+	:param t: Token to process
+	:return: Stemmed token
+	"""
+	if t in stemmer_cache:
+		return stemmer_cache[t]
+	else:
+		temp = lemmatizer.lemmatize(t)
+		temp = stemmer.stem(temp)
+		stemmer_cache[t] = temp
+		return temp
+
 class Model():
 	#constructor trains model
 	def __init__(self):
@@ -21,7 +43,7 @@ class Model():
 		y = np.array(annotations)
 		y = pd.get_dummies(y)
 		y = y.iloc[:,1].values
-		X_train, X_test, y_train, y_test = train_test_split(training,y,test_size = 0.75, random_state=0)
+		X_train, X_test, y_train, y_test = train_test_split(training,y,test_size = 0.50, random_state=0)
 
 		#reformat for training/testing
 		clean_y_train = []
@@ -60,6 +82,12 @@ class Model():
 				accuracy += 1
 		accuracy = accuracy / len(X_test)
 		print("Accuracy of model on partitioned testing data: " + str(accuracy))
+	
+		neg_acc = self.test_model('data/neg', 0)
+		print("accuracy of model on neg test data: " + str(neg_acc))
+
+		pos_acc = self.test_model('data/pos', 1)
+		print("accuracy of model on pos test data: " + str(pos_acc))
 		
 	
 	def test_model(self, dir, target):
@@ -78,19 +106,26 @@ class Model():
 				if file.endswith('.txt'):
 					with open(os.path.join(root, file), 'r') as f:
 						text = f.read()
-						test_data.append(text)
+						test_data.append(text.lower())
 
-		test_proc = Processor(test_data)
-		matrix, throwaway = test_proc.get_matrix_with_annotations()
+		#stem/lemmatize data and remove stopwords
+		test_corp = []
+		for item in test_data:
+			tokens = re.findall(text_regex, item)
+			tokens = [process_token(token) for token in tokens if token not in STOP_WORDS]
+			clean_data = ' '.join(tokens)
+			test_corp.append(clean_data)
+
+		#vectorize using the same cv as used in processing original data
+		external_test = self.processor.cv.transform(test_corp).toarray()
 		test_labels = [[target] for i in range(len(test_data))]
 
-		test_data = np.array(matrix)
+		test_mat = np.array(external_test)
 		test_labels = np.array(test_labels)
 
+		#calculate accuracy
 		accuracy = 0
-		for (x, target) in zip(test_data, test_labels):
-			# make a prediction on the data point and display the result
-			# to our console
+		for (x, target) in zip(test_mat, test_labels):
 			pred = self.nn.predict(x)[0][0]
 			step = 1 if pred > 0.5 else 0
 			if step == target[0]:
@@ -100,30 +135,6 @@ class Model():
 		return accuracy
 
 
-'''
-For user input predictions
-'''
-text_regex = r'''[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
-stemmer = PorterStemmer()
-stemmer_cache = {}
-lemmatizer = WordNetLemmatizer()
-STOP_WORDS = set(stopwords.words('english'))
-STOP_WORDS.remove('not')
-
-def process_token(t: str) -> str:
-            """
-            Small helper to stem individual tokens (either get from cache or
-            stem and add to cache)
-            :param t: Token to process
-            :return: Stemmed token
-            """
-            if t in stemmer_cache:
-                return stemmer_cache[t]
-            else:
-                #temp = stemmer.stem(t.lower())
-                temp = lemmatizer.lemmatize(t)
-                stemmer_cache[t] = temp
-                return temp
 if __name__ == "__main__":
 	m = Model()
 	user_input = input("\nWrite a sentence: ")
@@ -133,7 +144,6 @@ if __name__ == "__main__":
 		tokens = [process_token(token) for token in tokens if token not in STOP_WORDS]
 
 		clean_data = ' '.join(tokens)
-		print(clean_data)
 		u_corpus = [clean_data]
 		u_X_test = m.processor.cv.transform(u_corpus).toarray()
 		pred = m.nn.predict(u_X_test)[0][0]
