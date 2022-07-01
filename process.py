@@ -81,7 +81,7 @@ class Processor:
         self.data[index] = clean_data
 
     def vectorize(self, data):
-        cv = CountVectorizer(max_features=250)
+        cv = CountVectorizer(max_features=2500)
         vec_mat = cv.fit_transform(data).toarray()
         return vec_mat
         '''

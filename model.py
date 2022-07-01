@@ -19,7 +19,7 @@ class Model():
 		y = np.array(annotations)
 		y = pd.get_dummies(y)
 		y = y.iloc[:,1].values
-		X_train, X_test, y_train, y_test = train_test_split(training,y,test_size = 0.15, random_state=0)
+		X_train, X_test, y_train, y_test = train_test_split(training,y,test_size = 0.50, random_state=0)
 
 		#reformat for training/testing
 		clean_y_train = []
@@ -33,7 +33,7 @@ class Model():
 
 		#train model
 		n = len(matrix[0])
-		self.nn = NeuralNet([n,16,4,4,1], 0.01)
+		self.nn = NeuralNet([n,8,4,1], 0.01)
 		self.nn.fit(X_train, clean_y_train, epochs=1000)
 		
 		#get accuraacy on training and testing
@@ -58,12 +58,6 @@ class Model():
 				accuracy += 1
 		accuracy = accuracy / len(X_test)
 		print("Accuracy of model on partitioned testing data: " + str(accuracy))
-
-		#running model on another test data
-		neg_accuracy = self.test_model('data/neg', 0)
-		print("Accuracy of model on neg testing data: " + str(neg_accuracy))
-		pos_accuracy = self.test_model('data/pos', 1)
-		print("Accuracy of model on pos testing data: " + str(pos_accuracy))
 		
 	
 	def test_model(self, dir, target):
@@ -116,7 +110,7 @@ if __name__ == "__main__":
 		matrix, unused = proc.get_matrix_with_annotations()
 		vector_data = np.array(matrix)
 		shape = np.shape(vector_data)
-		padded_arr = np.zeros((1, 250))
+		padded_arr = np.zeros((1, 2500))
 		padded_arr[:shape[0],:shape[1]] = vector_data
 		pred = m.nn.predict(padded_arr)[0][0]
 

@@ -25,13 +25,12 @@ Results:
 Model 1:
 Built from scratch, using just numpy, model 1 is much slower and slightly lower in accuracy
 compared to Model 2. Testing data from the same source as the training data yield accuracy 
-around 77%. Accuracy on external datasets is 80% on negative sentiments and 21% on positive sentiments.
-Thats means the model yields 20% false positives and 79% false negatives.
+around 77%. When predicting sentiments of user inputs, it tends to struggle.
 
 Model 2:
 Using sklearn, the model gets around 84% on the testing data, which was partitioned from the 
-training set and not used during learning. However, it hovers around 53-59% on external testing
-data from a completely different source
+training set and not used during learning. When predicting new inputs from the user, it fares
+better than Model 1
 
 Conclusions:
 Both the model created from scratch and the model created from python's machine learning 
