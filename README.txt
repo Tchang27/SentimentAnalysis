@@ -26,18 +26,18 @@ Known Issues and Bugs:
   The best configuration to minimize overfitting:
   architecture = [n,32,32,8,1]
   alpha = 0.01
-  epochs = 100
+  epochs = 200
 
 Results:
   Model 1:
   Built from numpy, model 1 is slower to train than Model 2. Testing data partitioned from the
   same source as the training data yield accuracy around 86% after 100 iterations. Testing accuracy 
-  on data was 91% on negative sentiments and 92% on posiive sentiments, meaning that there
-  were 9% false positives and 8% false negatives.
+  on the overall dataset (training+testing) was 91% on negative sentiments and 92% on posiive sentiments, 
+  meaning that there were 9% false positives and 8% false negatives.
 
   Model 2:
   Using sklearn, the model gets around 84% on the partitioned testing data, which was split from the 
-  training set and not used during learning. Testing accuracy was 86% on negative
+  training set and not used during learning. Testing accuracy on the overall dataset was 86% on negative
   sentiments and 84% on positive sentiments, meaning there were 14% false positives and 16% false
   negatives.
 

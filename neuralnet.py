@@ -22,7 +22,7 @@ class NeuralNet:
     def _sigmoid_deriv(self, x):
         return x * (1 - x)
 
-    def fit(self, X, y, epochs=1000, displayUpdate=100):
+    def fit(self, X, y, epochs=1000, displayUpdate=20):
         '''
         Param:
         X - training set
