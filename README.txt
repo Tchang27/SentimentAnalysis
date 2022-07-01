@@ -18,18 +18,18 @@ Once the model is trained, it will prompt the user to write a sentence then eval
 Quit the program by typing .quit
 
 Known Issues and Bugs:
-Currently Model 1 is slightly overfiting the training data
+Model 1 has a higher risk of overfiting the training data
 The best configuration to minimize overfitting:
-[n,32,32,8,1]
+architecture = [n,32,32,8,1]
 alpha = 0.01
-epochs = 100-150
+epochs = 100
 
 Results:
 Model 1:
 Built from scratch, using just numpy, model 1 is slower to train than Model 2. Testing data from the
-same source as the training data yield accuracy around 85% after 100 iterations. Testing accuracy 
-on external data was 87% on negative sentiments and 89% on posiive sentiments, meaning that there
-were 13% false positives and 11% false negatives.
+same source as the training data yield accuracy around 86% after 100 iterations. Testing accuracy 
+on external data was 91% on negative sentiments and 92% on posiive sentiments, meaning that there
+were 9% false positives and 8% false negatives.
 
 Model 2:
 Using sklearn, the model gets around 84% on the testing data, which was partitioned from the 
@@ -38,9 +38,9 @@ sentiments and 84% on positive sentiments, meaning there were 14% false positive
 negatives.
 
 Conclusions:
-Both the model created from scratch and the model created from python's machine learning 
-libraries tend to perform sentiment analysis well on testing data sourced from the same 
-dataset as the training data. Model 2 performed marginally better with user input data.
+Both the models tend to perform sentiment analysis well on testing data sourced from the same 
+dataset as the training data. Model 1 performed better on the external dataset compared to 
+Model 2.
 
 Acknowledgements:
 Data gathered from:

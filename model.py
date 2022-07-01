@@ -83,9 +83,9 @@ class Model():
 		accuracy = accuracy / len(X_test)
 		print("Accuracy of model on partitioned testing data: " + str(accuracy))
 	
+		#testing external data
 		neg_acc = self.test_model('data/neg', 0)
 		print("accuracy of model on neg test data: " + str(neg_acc))
-
 		pos_acc = self.test_model('data/pos', 1)
 		print("accuracy of model on pos test data: " + str(pos_acc))
 		
