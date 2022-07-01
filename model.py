@@ -59,7 +59,7 @@ class Model():
 		#train model
 		n = len(matrix[0])
 		self.nn = NeuralNet([n,32,32,8,1], 0.01)
-		self.nn.fit(X_train, clean_y_train, epochs=100)
+		self.nn.fit(X_train, clean_y_train, epochs=150)
 		
 		#get accuraacy on training
 		accuracy = 0
