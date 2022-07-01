@@ -37,6 +37,7 @@ class Model():
 		Constructor of model, trains neural net to be able to
 		conduct sentiment analysis on user inputs
 		'''
+		#get data, split into testing and training
 		self.processor = Processor()
 		matrix, annotations = self.processor.get_matrix_with_annotations()
 		training = np.array(matrix)
@@ -60,7 +61,7 @@ class Model():
 		self.nn = NeuralNet([n,32,32,8,1], 0.01)
 		self.nn.fit(X_train, clean_y_train, epochs=100)
 		
-		#get accuraacy on training and testing
+		#get accuraacy on training
 		accuracy = 0
 		for (x, target) in zip(X_train, clean_y_train):
 			# make a prediction on the data point and display the result
@@ -72,6 +73,7 @@ class Model():
 		accuracy = accuracy / len(X_train)
 		print("Accuracy of model on training data: " + str(accuracy))
 
+		#get accuracy on testing
 		accuracy = 0
 		for (x, target) in zip(X_test, clean_y_test):
 			# make a prediction on the data point and display the result
@@ -130,11 +132,11 @@ class Model():
 			step = 1 if pred > 0.5 else 0
 			if step == target[0]:
 				accuracy += 1
-
 		accuracy = accuracy / len(test_data)
+		
 		return accuracy
 
-
+#console for predicting user inputs
 if __name__ == "__main__":
 	m = Model()
 	user_input = input("\nWrite a sentence: ")
