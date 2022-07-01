@@ -35,8 +35,7 @@ better than Model 1
 Conclusions:
 Both the model created from scratch and the model created from python's machine learning 
 libraries tend to perform sentiment analysis well on testing data sourced from the same 
-dataset as the training data, but poorly on external datasets. This indicates the models 
-are learning hidden patterns within the training dataset rather than generalized sentiment patterns.
+dataset as the training data. 
 
 Acknowledgements:
 Data gathered from:
