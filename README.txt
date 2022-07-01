@@ -23,9 +23,9 @@ data
 
 Results:
 Model 1:
-Built from scratch, using just numpy, model 1 is much slower and slightly lower in accuracy
-compared to Model 2. Testing data from the same source as the training data yield accuracy 
-around 77%. When predicting sentiments of user inputs, it tends to struggle.
+Built from scratch, using just numpy, model 1 is much slower. Testing data from the same source as 
+the training data yield accuracy around 86% after 1000 iterations. When predicting sentiments of user inputs, 
+it tends to struggle, however, indicating the model is overfitting the data.
 
 Model 2:
 Using sklearn, the model gets around 84% on the testing data, which was partitioned from the 
@@ -35,7 +35,8 @@ better than Model 1
 Conclusions:
 Both the model created from scratch and the model created from python's machine learning 
 libraries tend to perform sentiment analysis well on testing data sourced from the same 
-dataset as the training data. 
+dataset as the training data. Model 2 performed better with user input data, suggesting
+that Model 1 was overfitting the dattaset rather than accurately predicting sentiment.
 
 Acknowledgements:
 Data gathered from:
