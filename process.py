@@ -1,10 +1,7 @@
 import re
 import csv
-import numpy as np
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer, WordNetLemmatizer
-from keras.preprocessing.text import Tokenizer
-from keras.utils import pad_sequences
 from sklearn.feature_extraction.text import CountVectorizer
 
 
@@ -22,7 +19,7 @@ class Processor:
         
         self.cv = CountVectorizer(max_features=2500)
 
-        #read in csv
+        #read in csv or other data
         if len(array) == 0:
             with open('data/IMDB_Dataset.csv', 'r') as file:
                 reader = csv.reader(file)
@@ -31,6 +28,7 @@ class Processor:
                     self.annotations.append(row[1])
         else:
             self.data = array
+        
         #parse data
         self.parse_all()
 
@@ -85,19 +83,6 @@ class Processor:
     def vectorize(self, data):
         vec_mat = self.cv.fit_transform(data).toarray()
         return vec_mat
-        '''
-        max_words = 2000
-        max_len = 200
-        tokenizer = Tokenizer(num_words=max_words)
-        tokenizer.fit_on_texts(data)
-        sequences = tokenizer.texts_to_sequences(data)
-        data = pad_sequences(sequences, maxlen=max_len)
-
-        data = np.divide(data, 200)
-
-        return data
-        '''
-        
         
     def get_matrix_with_annotations(self):
         return self.data, self.annotations

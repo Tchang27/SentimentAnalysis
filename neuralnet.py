@@ -43,6 +43,7 @@ class NeuralNet:
             
             counter += 1
             print("epoch " + str(counter) + " complete")
+
     def fit_partial(self, x, y):
         #forwward propagation
         A = [np.atleast_2d(x)]
