@@ -4,7 +4,9 @@ import numpy as np
 import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
-
+import re
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
 
 class Model():
 	#constructor trains model
@@ -19,7 +21,7 @@ class Model():
 		y = np.array(annotations)
 		y = pd.get_dummies(y)
 		y = y.iloc[:,1].values
-		X_train, X_test, y_train, y_test = train_test_split(training,y,test_size = 0.50, random_state=0)
+		X_train, X_test, y_train, y_test = train_test_split(training,y,test_size = 0.75, random_state=0)
 
 		#reformat for training/testing
 		clean_y_train = []
@@ -33,8 +35,8 @@ class Model():
 
 		#train model
 		n = len(matrix[0])
-		self.nn = NeuralNet([n,8,4,1], 0.01)
-		self.nn.fit(X_train, clean_y_train, epochs=1000)
+		self.nn = NeuralNet([n,32,32,8,1], 0.01)
+		self.nn.fit(X_train, clean_y_train, epochs=100)
 		
 		#get accuraacy on training and testing
 		accuracy = 0
@@ -98,21 +100,43 @@ class Model():
 		return accuracy
 
 
+'''
+For user input predictions
+'''
+text_regex = r'''[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
+stemmer = PorterStemmer()
+stemmer_cache = {}
+lemmatizer = WordNetLemmatizer()
+STOP_WORDS = set(stopwords.words('english'))
+STOP_WORDS.remove('not')
 
+def process_token(t: str) -> str:
+            """
+            Small helper to stem individual tokens (either get from cache or
+            stem and add to cache)
+            :param t: Token to process
+            :return: Stemmed token
+            """
+            if t in stemmer_cache:
+                return stemmer_cache[t]
+            else:
+                #temp = stemmer.stem(t.lower())
+                temp = lemmatizer.lemmatize(t)
+                stemmer_cache[t] = temp
+                return temp
 if __name__ == "__main__":
 	m = Model()
 	user_input = input("\nWrite a sentence: ")
 	while user_input != ".quit":
-		data = []
-		data.append(str(user_input))
-		proc = Processor(data)
+		u = user_input.lower()
+		tokens = re.findall(text_regex, u)
+		tokens = [process_token(token) for token in tokens if token not in STOP_WORDS]
 
-		matrix, unused = proc.get_matrix_with_annotations()
-		vector_data = np.array(matrix)
-		shape = np.shape(vector_data)
-		padded_arr = np.zeros((1, 2500))
-		padded_arr[:shape[0],:shape[1]] = vector_data
-		pred = m.nn.predict(padded_arr)[0][0]
+		clean_data = ' '.join(tokens)
+		print(clean_data)
+		u_corpus = [clean_data]
+		u_X_test = m.processor.cv.transform(u_corpus).toarray()
+		pred = m.nn.predict(u_X_test)[0][0]
 
 		print("Model output: " + str(pred))
 		step = 1 if pred > 0.5 else 0

@@ -18,27 +18,31 @@ Once the model is trained, it will prompt the user to write a sentence then eval
 Quit the program by typing .quit
 
 Known Issues and Bugs:
-Currently Model 1 is overfiting the training data, achieving around 55% accuracy on testing data
-data 
+Currently Model 1 is overfiting the training data
+The best configuration to minimize overfitting:
+[n,32,32,8,1]
+alpha = 0.01
+epochs = 100-150
 
 Results:
 Model 1:
-Built from scratch, using just numpy, model 1 is much slower. Testing data from the same source as 
-the training data yield accuracy around 86% after 1000 iterations. When predicting sentiments of user inputs, 
-it tends to struggle, however, indicating the model is overfitting the data.
+Built from scratch, using just numpy, model 1 is slower to train than Model 2. Testing data from the
+same source as the training data yield accuracy around 85% after 100 iterations.
 
 Model 2:
 Using sklearn, the model gets around 84% on the testing data, which was partitioned from the 
-training set and not used during learning. When predicting new inputs from the user, it fares
-better than Model 1
+training set and not used during learning. 
 
 Conclusions:
 Both the model created from scratch and the model created from python's machine learning 
 libraries tend to perform sentiment analysis well on testing data sourced from the same 
-dataset as the training data. Model 2 performed better with user input data, suggesting
-that Model 1 was overfitting the dattaset rather than accurately predicting sentiment.
+dataset as the training data. Model 2 performed marginally better with user input data.
 
 Acknowledgements:
 Data gathered from:
   https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews
-  https://ai.stanford.edu/~amaas/data/sentiment/
+Code resources:
+  https://pyimagesearch.com/2021/05/06/backpropagation-from-scratch-with-python/
+  https://towardsdatascience.com/lets-code-a-neural-network-in-plain-numpy-ae7e74410795
+  https://realpython.com/python-ai-neural-network/
+  https://towardsdatascience.com/deep-learning-with-python-neural-networks-complete-tutorial-6b53c0b06af0

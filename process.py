@@ -20,6 +20,8 @@ class Processor:
         self.annotations = []
         self.text_regex = r'''[a-zA-Z0-9]+'[a-zA-Z0-9]+|[a-zA-Z0-9]+'''
         
+        self.cv = CountVectorizer(max_features=2500)
+
         #read in csv
         if len(array) == 0:
             with open('data/IMDB_Dataset.csv', 'r') as file:
@@ -81,8 +83,7 @@ class Processor:
         self.data[index] = clean_data
 
     def vectorize(self, data):
-        cv = CountVectorizer(max_features=2500)
-        vec_mat = cv.fit_transform(data).toarray()
+        vec_mat = self.cv.fit_transform(data).toarray()
         return vec_mat
         '''
         max_words = 2000
