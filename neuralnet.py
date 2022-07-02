@@ -1,4 +1,5 @@
 import numpy as np
+from tqdm import tqdm
 
 class NeuralNet:
     def __init__(self, layers, alpha = 0.1):
@@ -22,7 +23,7 @@ class NeuralNet:
     def _sigmoid_deriv(self, x):
         return x * (1 - x)
 
-    def fit(self, X, y, epochs=1000, displayUpdate=20):
+    def fit(self, X, y, epochs=1000, displayUpdate=50):
         '''
         Param:
         X - training set

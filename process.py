@@ -1,9 +1,8 @@
 import re
-import csv
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 from sklearn.feature_extraction.text import CountVectorizer
-
+import os
 
 STOP_WORDS = set(stopwords.words('english'))
 STOP_WORDS.remove('not')
@@ -19,6 +18,7 @@ class Processor:
         
         self.cv = CountVectorizer(max_features=2500)
 
+        '''
         #read in csv or other data
         if len(array) == 0:
             with open('data/IMDB_Dataset.csv', 'r') as file:
@@ -28,16 +28,30 @@ class Processor:
                     self.annotations.append(row[1])
         else:
             self.data = array
+        '''
+        for root, dirs, files in os.walk('data/train/neg'):
+            for file in files:
+                if file.endswith('.txt'):
+                        with open(os.path.join(root, file), 'r') as f:
+                            text = f.read()
+                            self.data.append(text.lower())
+        for _ in range(len(self.data)):
+            self.annotations.append([0])
+        for _ in range(len(self.data)):
+            self.annotations.append([1])
+        
+        for root, dirs, files in os.walk('data/train/pos'):
+            for file in files:
+                if file.endswith('.txt'):
+                        with open(os.path.join(root, file), 'r') as f:
+                            text = f.read()
+                            self.data.append(text.lower())
         
         #parse data
         self.parse_all()
+        
 
         #vectorize and standardize data for training
-        for i in range(len(self.annotations)):
-            if self.annotations[i] == 'positive':
-                self.annotations[i] = 1
-            else:
-                self.annotations[i] = 0
         self.data = self.vectorize(self.data)
 
     def parse_all(self):
@@ -86,4 +100,3 @@ class Processor:
         
     def get_matrix_with_annotations(self):
         return self.data, self.annotations
-
